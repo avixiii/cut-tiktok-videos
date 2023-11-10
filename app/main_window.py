@@ -2,7 +2,7 @@ from PyQt5.QtGui import QPalette, QColor
 from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QWidget, QLabel, QLineEdit, QPushButton, QTableWidgetItem, \
     QVBoxLayout, QTableWidget
 from app.utils import open_dialog, get_video_info, click
-
+from app.utils import *
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -14,6 +14,8 @@ class MainWindow(QMainWindow):
         # Define edit text
         self.edt_input_folder = None
         self.edt_output_folder = None
+
+        self.name_videos = None
 
         self.center_on_screen()
 
@@ -60,6 +62,10 @@ class MainWindow(QMainWindow):
         input_btn = QPushButton('Browse', self)
         input_btn.setGeometry(400, 21, 100, 21)
         input_btn.clicked.connect(self.open_dialog)
+
+        render_btn = QPushButton('Render', self)
+        render_btn.setGeometry(600, 20, 100, 100)
+        render_btn.clicked.connect(lambda: render_videos(self.edt_input_folder.text(), 20, "Text for Part", self.edt_output_folder.text(), self.name_videos))
 
         lb_output_folder = QLabel("Output Folder", self)
         lb_output_folder.setGeometry(10, 50, 91, 16)
@@ -140,11 +146,15 @@ class MainWindow(QMainWindow):
 
     def populate_video_list(self, folder_path):
         video_info = get_video_info(folder_path)
+        self.name_videos = [item[0] for item in video_info]
         for video in video_info:
-            video.append("16:9")
+            video.append("9:16")
             video.append("")
             video.append("Waiting")
         table = self.findChild(QTableWidget, "video_list_table")
+
+        # for name in name_videos:
+        #     render_videos(f"{folder_path}/{name}", 20, "Text for Part", "output")
 
         if table is not None:
             table.setRowCount(len(video_info))
