@@ -1,0 +1,7 @@
+test.py
+test1.py
+.DS_Store
+.idea/
+*.mp3
+*.mp4
+venv/
